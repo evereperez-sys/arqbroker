@@ -228,14 +228,501 @@ El patrón Broker es una solución arquitectónica fundamental para sistemas dis
 
 ---
 
-Si quieres, también puedo generarte:
+Aquí tienes un ejemplo completo de proyecto en Java con Spring Boot + RabbitMQ usando Gradle, incluyendo:
 
-* 🔹 Un README más técnico con diagramas UML
-* 🔹 Un ejemplo en Java / Node / Python
-* 🔹 Una versión orientada a microservicios
-* 🔹 Un repositorio base con estructura de carpetas
+📁 Estructura del repositorio
 
-Solo dime qué enfoque quieres 🚀
+📦 build.gradle
+
+🧱 Todas las clases necesarias
+
+🐳 Docker Compose opcional para levantar RabbitMQ
+
+📄 README listo para GitHub
+
+📁 Estructura del repositorio
+spring-boot-rabbitmq-demo/
+│
+├── build.gradle
+├── settings.gradle
+├── docker-compose.yml
+├── README.md
+│
+└── src/
+    └── main/
+        ├── java/
+        │   └── com/example/rabbitdemo/
+        │       ├── RabbitDemoApplication.java
+        │       ├── config/
+        │       │   └── RabbitMQConfig.java
+        │       ├── controller/
+        │       │   └── MessageController.java
+        │       ├── producer/
+        │       │   └── MessageProducer.java
+        │       ├── consumer/
+        │       │   └── MessageConsumer.java
+        │       └── model/
+        │           └── MessageDTO.java
+        │
+        └── resources/
+            └── application.yml
+
+📦 build.gradle
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.5'
+    id 'io.spring.dependency-management' version '1.1.4'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '17'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+⚙ settings.gradle
+rootProject.name = 'spring-boot-rabbitmq-demo'
+
+⚙ application.yml
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+🚀 Clase principal
+RabbitDemoApplication.java
+package com.example.rabbitdemo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class RabbitDemoApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(RabbitDemoApplication.class, args);
+    }
+}
+
+🧱 Configuración RabbitMQ
+RabbitMQConfig.java
+package com.example.rabbitdemo.config;
+
+import org.springframework.amqp.core.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class RabbitMQConfig {
+
+    public static final String QUEUE = "demo.queue";
+    public static final String EXCHANGE = "demo.exchange";
+    public static final String ROUTING_KEY = "demo.routingkey";
+
+    @Bean
+    public Queue queue() {
+        return new Queue(QUEUE);
+    }
+
+    @Bean
+    public TopicExchange exchange() {
+        return new TopicExchange(EXCHANGE);
+    }
+
+    @Bean
+    public Binding binding(Queue queue, TopicExchange exchange) {
+        return BindingBuilder
+                .bind(queue)
+                .to(exchange)
+                .with(ROUTING_KEY);
+    }
+}
+
+📦 DTO del mensaje
+MessageDTO.java
+package com.example.rabbitdemo.model;
+
+public class MessageDTO {
+
+    private String content;
+
+    public MessageDTO() {}
+
+    public MessageDTO(String content) {
+        this.content = content;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+}
+
+📤 Producer
+MessageProducer.java
+package com.example.rabbitdemo.producer;
+
+import com.example.rabbitdemo.config.RabbitMQConfig;
+import com.example.rabbitdemo.model.MessageDTO;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.stereotype.Service;
+
+@Service
+public class MessageProducer {
+
+    private final RabbitTemplate rabbitTemplate;
+
+    public MessageProducer(RabbitTemplate rabbitTemplate) {
+        this.rabbitTemplate = rabbitTemplate;
+    }
+
+    public void sendMessage(MessageDTO message) {
+        rabbitTemplate.convertAndSend(
+                RabbitMQConfig.EXCHANGE,
+                RabbitMQConfig.ROUTING_KEY,
+                message
+        );
+    }
+}
+
+📥 Consumer
+MessageConsumer.java
+package com.example.rabbitdemo.consumer;
+
+import com.example.rabbitdemo.config.RabbitMQConfig;
+import com.example.rabbitdemo.model.MessageDTO;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.stereotype.Service;
+
+@Service
+public class MessageConsumer {
+
+    @RabbitListener(queues = RabbitMQConfig.QUEUE)
+    public void receiveMessage(MessageDTO message) {
+        System.out.println("Mensaje recibido: " + message.getContent());
+    }
+}
+
+🌐 Controller REST
+MessageController.java
+package com.example.rabbitdemo.controller;
+
+import com.example.rabbitdemo.model.MessageDTO;
+import com.example.rabbitdemo.producer.MessageProducer;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/messages")
+public class MessageController {
+
+    private final MessageProducer producer;
+
+    public MessageController(MessageProducer producer) {
+        this.producer = producer;
+    }
+
+    @PostMapping
+    public String sendMessage(@RequestBody MessageDTO message) {
+        producer.sendMessage(message);
+        return "Mensaje enviado a RabbitMQ!";
+    }
+}
+
+🐳 docker-compose.yml (Opcional)
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
 
 
+Panel web:
 
+http://localhost:15672
+usuario: guest
+password: guest
+
+📄 README.md para GitHub
+# Spring Boot RabbitMQ Demo
+
+Ejemplo simple de integración entre Spring Boot y RabbitMQ usando Gradle.
+
+## Tecnologías
+
+- Java 17
+- Spring Boot 3
+- RabbitMQ
+- Gradle
+
+## Ejecutar RabbitMQ
+
+```bash
+docker-compose up -d
+
+
+Panel:
+http://localhost:15672
+
+Ejecutar la aplicación
+./gradlew bootRun
+
+Enviar mensaje
+
+POST:
+
+http://localhost:8080/api/messages
+
+
+Body:
+
+{
+  "content": "Hola RabbitMQ!"
+}
+
+
+El mensaje será consumido automáticamente y mostrado en consola.
+
+
+---
+
+# 🎯 Resultado
+
+Este proyecto:
+
+✔ Expone un endpoint REST  
+✔ Envía mensajes a RabbitMQ  
+✔ Consume automáticamente desde una cola  
+✔ Está listo para producción básica  
+✔ Usa Gradle  
+✔ Compatible con Java 17
+
+
+Incluye:
+
+Dockerfile optimizado multi-stage
+
+Docker Compose con red interna
+
+Variables de entorno
+
+Healthcheck
+
+Espera automática de RabbitMQ
+
+Persistencia de datos
+
+📁 Estructura del repositorio
+spring-boot-rabbitmq-docker/
+│
+├── build.gradle
+├── settings.gradle
+├── Dockerfile
+├── docker-compose.yml
+├── .dockerignore
+├── README.md
+│
+└── src/
+    └── main/
+        ├── java/
+        │   └── com/example/rabbitdemo/
+        │       ├── RabbitDemoApplication.java
+        │       ├── config/RabbitMQConfig.java
+        │       ├── controller/MessageController.java
+        │       ├── producer/MessageProducer.java
+        │       ├── consumer/MessageConsumer.java
+        │       └── model/MessageDTO.java
+        │
+        └── resources/
+            └── application.yml
+
+🐳 Dockerfile (Multi-Stage Optimizado)
+# ---------- Stage 1: Build ----------
+FROM gradle:8.5-jdk17-alpine AS builder
+WORKDIR /app
+COPY . .
+RUN gradle clean bootJar --no-daemon
+
+# ---------- Stage 2: Runtime ----------
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+
+COPY --from=builder /app/build/libs/*.jar app.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java","-jar","app.jar"]
+
+🐳 docker-compose.yml
+version: "3.9"
+
+services:
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: spring-rabbit-app
+    restart: always
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: admin
+      SPRING_RABBITMQ_PASSWORD: admin
+    networks:
+      - app-network
+
+volumes:
+  rabbitmq_data:
+
+networks:
+  app-network:
+
+⚙ application.yml (Optimizado para Docker)
+spring:
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:guest}
+    password: ${SPRING_RABBITMQ_PASSWORD:guest}
+  jackson:
+    serialization:
+      INDENT_OUTPUT: true
+
+server:
+  port: 8080
+
+🚫 .dockerignore
+build/
+.gradle/
+.git/
+.gitignore
+README.md
+
+🚀 Cómo ejecutar todo
+
+Desde la raíz del proyecto:
+
+docker-compose up --build
+
+🌐 Accesos
+Aplicación
+http://localhost:8080
+
+RabbitMQ Management UI
+http://localhost:15672
+usuario: admin
+password: admin
+
+📤 Probar envío de mensaje
+curl -X POST http://localhost:8080/api/messages \
+-H "Content-Type: application/json" \
+-d '{"content":"Hola desde Docker"}'
+
+
+Verás el mensaje en los logs del contenedor:
+
+docker logs spring-rabbit-app
+
+📦 README.md listo para GitHub
+# Spring Boot RabbitMQ Dockerized
+
+Proyecto completo dockerizado con:
+
+- Spring Boot 3
+- RabbitMQ
+- Gradle
+- Docker Multi-stage
+- Healthchecks
+- Persistencia de datos
+
+## Ejecutar
+
+docker-compose up --build
+
+## Endpoints
+
+POST http://localhost:8080/api/messages
+
+Body:
+
+{
+  "content": "Hola Docker"
+}
+
+## RabbitMQ UI
+
+http://localhost:15672
+admin / admin
+
+🏗 Arquitectura resultante
+┌─────────────────────┐
+│   Cliente REST      │
+└─────────┬───────────┘
+          │
+          ▼
+┌─────────────────────┐
+│ Spring Boot App     │
+│  Producer + Consumer│
+└─────────┬───────────┘
+          │
+          ▼
+┌─────────────────────┐
+│      RabbitMQ       │
+│ Exchange + Queue    │
+└─────────────────────┘
+
+🎯 Qué tiene esta versión
+
+✔ Multi-stage build (imagen ligera)
+✔ RabbitMQ persistente
+✔ Healthchecks
+✔ Espera automática del broker
+✔ Variables de entorno
+✔ Red interna docker
+✔ Lista para CI/CD
