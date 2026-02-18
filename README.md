@@ -1,9 +1,5 @@
 # arqbroker
 Proyecto investigacion 
-¡Qué buena anécdota la del conejo naranja! La verdad es que no hay mejor metáfora para **RabbitMQ** que un supervisor saltarín organizando cajas. Ese caos creativo que tuviste con la IA es, irónicamente, lo que estos sistemas intentan resolver en el software.
-
-Aquí tienes un resumen estructurado y "en criollo" de lo que explicaste sobre los sistemas de colas y RabbitMQ:
-
 ---
 
 ## 1. El Origen: El Patrón Observer y Pub/Sub
@@ -64,4 +60,4 @@ El texto menciona que, aunque RabbitMQ es un estándar sólido, compite con otro
 
 ---
 
-¿Te gustaría que profundizáramos en cómo configurar una de estas colas en un lenguaje específico o preferís ver cómo se rutean los mensajes según su importancia?
+
