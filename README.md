@@ -3,9 +3,9 @@ Proyecto investigacion
 ---
 
 
-# 🧩 Patrón Arquitectónico Broker
+#  Patrón Arquitectónico Broker
 
-## 📌 Descripción
+## Descripción
 
 El **patrón arquitectónico Broker** es un patrón diseñado para la construcción de **sistemas distribuidos desacoplados**, donde múltiples componentes (clientes y servidores) se comunican a través de un intermediario llamado *broker*.
 
@@ -13,7 +13,7 @@ Este patrón permite que los clientes invoquen servicios remotos sin conocer su 
 
 ---
 
-## 🎯 Objetivo
+## Objetivo
 
 Resolver los problemas de:
 
@@ -24,23 +24,23 @@ Resolver los problemas de:
 
 ---
 
-## 🏗️ Estructura del Patrón
+##  Estructura del Patrón
 
 El patrón Broker está compuesto por los siguientes elementos:
 
-### 1️⃣ Cliente
+### 1 Cliente
 
 * Solicita servicios.
 * No conoce la ubicación ni la implementación del servidor.
 * Se comunica únicamente con el broker.
 
-### 2️⃣ Servidor
+### 2 Servidor
 
 * Implementa y expone funcionalidades mediante interfaces.
 * Se registra en el broker.
 * Procesa peticiones y devuelve resultados.
 
-### 3️⃣ Broker
+### 2 Broker
 
 * Actúa como intermediario.
 * Registra servidores.
@@ -48,7 +48,7 @@ El patrón Broker está compuesto por los siguientes elementos:
 * Redirige peticiones y respuestas.
 * Gestiona errores.
 
-### 4️⃣ Proxy (Cliente y Servidor)
+### 4 Proxy (Cliente y Servidor)
 
 * Abstrae detalles de comunicación.
 * Maneja serialización y deserialización de datos.
@@ -56,7 +56,7 @@ El patrón Broker está compuesto por los siguientes elementos:
 
 ---
 
-## 🔄 Flujo de Funcionamiento
+##  Flujo de Funcionamiento
 
 ### Registro de un Servidor
 
@@ -75,13 +75,13 @@ El patrón Broker está compuesto por los siguientes elementos:
 
 ---
 
-## 🔀 Variantes del Patrón
+##  Variantes del Patrón
 
-### 1️⃣ Comunicación Directa
+### 1 Comunicación Directa
 
 El broker interviene solo en la primera petición. Luego, cliente y servidor se comunican directamente para evitar cuellos de botella.
 
-### 2️⃣ Paso de Mensajes (Publish/Subscribe)
+### 2 Paso de Mensajes (Publish/Subscribe)
 
 En lugar de invocaciones remotas:
 
@@ -91,7 +91,7 @@ En lugar de invocaciones remotas:
 
 ---
 
-## ⚙️ Invocaciones
+##  Invocaciones
 
 ### 🔹 Síncronas
 
@@ -103,28 +103,28 @@ El cliente continúa ejecutándose y recibe la respuesta posteriormente (normalm
 
 ---
 
-## ✅ Ventajas
+##  Ventajas
 
-* 🔍 Transparencia de localización
-* 🔗 Desacoplamiento entre componentes
-* 📈 Escalabilidad potencial
-* ➕ Fácil extensibilidad
-* 🔄 Sustitución sencilla de implementaciones
-* 🌍 Portabilidad entre plataformas
-* ♻️ Reusabilidad de servicios
-
----
-
-## ❌ Desventajas
-
-* 🐢 Posible pérdida de eficiencia
-* ⚠️ Punto único de fallo (si existe un solo broker)
-* 🧪 Mayor complejidad en pruebas y depuración
-* 🧠 Mayor esfuerzo de diseño (interfaces y modelo de objetos)
+*  Transparencia de localización
+*  Desacoplamiento entre componentes
+*  Escalabilidad potencial
+*  Fácil extensibilidad
+*  Sustitución sencilla de implementaciones
+*  Portabilidad entre plataformas
+*  Reusabilidad de servicios
 
 ---
 
-## 🧠 Consideraciones de Diseño
+##  Desventajas
+
+*  Posible pérdida de eficiencia
+*  Punto único de fallo (si existe un solo broker)
+*  Mayor complejidad en pruebas y depuración
+*  Mayor esfuerzo de diseño (interfaces y modelo de objetos)
+
+---
+
+##  Consideraciones de Diseño
 
 Para implementar correctamente el patrón Broker es necesario:
 
@@ -140,7 +140,7 @@ Para implementar correctamente el patrón Broker es necesario:
 
 ---
 
-## 🏢 Casos de Uso
+##  Casos de Uso
 
 * Sistemas distribuidos empresariales.
 * Arquitecturas basadas en microservicios.
@@ -150,7 +150,7 @@ Para implementar correctamente el patrón Broker es necesario:
 
 ---
 
-## 🧱 Comparación con Arquitectura Monolítica
+##  Comparación con Arquitectura Monolítica
 
 | Monolito                          | Broker                         |
 | --------------------------------- | ------------------------------ |
@@ -161,25 +161,25 @@ Para implementar correctamente el patrón Broker es necesario:
 
 ---
 
-## 📚 Conclusión
+##  Conclusión
 
 El patrón Broker es una solución arquitectónica fundamental para sistemas distribuidos modernos. Aunque introduce mayor complejidad en el diseño y la infraestructura, proporciona una base sólida para construir sistemas escalables, extensibles y desacoplados.
 
 ---
 
-Aquí tienes un ejemplo completo de proyecto en Java con Spring Boot + RabbitMQ usando Gradle, incluyendo:
+ejemplo de proyecto en Java con Spring Boot + RabbitMQ usando Gradle
 
-📁 Estructura del repositorio
+ Estructura del repositorio
 
-📦 build.gradle
+ build.gradle
 
-🧱 Todas las clases necesarias
+ Todas las clases necesarias
 
-🐳 Docker Compose opcional para levantar RabbitMQ
+ Docker Compose opcional para levantar RabbitMQ
 
-📄 README listo para GitHub
 
-📁 Estructura del repositorio
+
+Estructura del repositorio
 
 ```text
 
@@ -209,7 +209,7 @@ spring-boot-rabbitmq-demo/
         └── resources/
             └── application.yml
 
-📦 build.gradle
+build.gradle
 
 plugins {
     id 'java'
@@ -239,10 +239,11 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-⚙ settings.gradle
+ settings.gradle
 rootProject.name = 'spring-boot-rabbitmq-demo'
 
-⚙ application.yml
+application.yml
+
 spring:
   rabbitmq:
     host: localhost
@@ -250,7 +251,8 @@ spring:
     username: guest
     password: guest
 
-🚀 Clase principal
+Clase principal
+
 RabbitDemoApplication.java
 package com.example.rabbitdemo;
 
@@ -265,7 +267,8 @@ public class RabbitDemoApplication {
     }
 }
 
-🧱 Configuración RabbitMQ
+Configuración RabbitMQ
+
 RabbitMQConfig.java
 package com.example.rabbitdemo.config;
 
@@ -299,7 +302,7 @@ public class RabbitMQConfig {
     }
 }
 
-📦 DTO del mensaje
+DTO del mensaje
 MessageDTO.java
 package com.example.rabbitdemo.model;
 
@@ -322,7 +325,7 @@ public class MessageDTO {
     }
 }
 
-📤 Producer
+  Producer
 MessageProducer.java
 package com.example.rabbitdemo.producer;
 
@@ -349,7 +352,7 @@ public class MessageProducer {
     }
 }
 
-📥 Consumer
+ Consumer
 MessageConsumer.java
 package com.example.rabbitdemo.consumer;
 
@@ -367,7 +370,7 @@ public class MessageConsumer {
     }
 }
 
-🌐 Controller REST
+ Controller REST
 MessageController.java
 package com.example.rabbitdemo.controller;
 
@@ -392,7 +395,7 @@ public class MessageController {
     }
 }
 
-🐳 docker-compose.yml (Opcional)
+ docker-compose.yml (Opcional)
 version: '3.8'
 
 services:
@@ -410,7 +413,7 @@ http://localhost:15672
 usuario: guest
 password: guest
 
-📄 README.md para GitHub
+
 # Spring Boot RabbitMQ Demo
 
 Ejemplo simple de integración entre Spring Boot y RabbitMQ usando Gradle.
@@ -453,7 +456,7 @@ El mensaje será consumido automáticamente y mostrado en consola.
 
 ---
 
-# 🎯 Resultado
+#  Resultado
 
 Este proyecto:
 
@@ -479,7 +482,7 @@ Espera automática de RabbitMQ
 
 Persistencia de datos
 
-📁 Estructura del repositorio
+Estructura del repositorio
 
 spring-boot-rabbitmq-docker/
 │
@@ -504,7 +507,7 @@ spring-boot-rabbitmq-docker/
         └── resources/
             └── application.yml
 
-🐳 Dockerfile (Multi-Stage Optimizado)
+Dockerfile (Multi-Stage Optimizado)
 # ---------- Stage 1: Build ----------
 FROM gradle:8.5-jdk17-alpine AS builder
 WORKDIR /app
@@ -521,7 +524,7 @@ EXPOSE 8080
 
 ENTRYPOINT ["java","-jar","app.jar"]
 
-🐳 docker-compose.yml
+docker-compose.yml
 version: "3.9"
 
 services:
@@ -581,20 +584,21 @@ spring:
 server:
   port: 8080
 
-🚫 .dockerignore
+.dockerignore
 build/
 .gradle/
 .git/
 .gitignore
 README.md
 
-🚀 Cómo ejecutar todo
+Cómo ejecutar todo
 
 Desde la raíz del proyecto:
 
 docker-compose up --build
 
-🌐 Accesos
+ Accesos
+
 Aplicación
 http://localhost:8080
 
@@ -603,7 +607,7 @@ http://localhost:15672
 usuario: admin
 password: admin
 
-📤 Probar envío de mensaje
+ Probar envío de mensaje
 curl -X POST http://localhost:8080/api/messages \
 -H "Content-Type: application/json" \
 -d '{"content":"Hola desde Docker"}'
@@ -613,7 +617,7 @@ Verás el mensaje en los logs del contenedor:
 
 docker logs spring-rabbit-app
 
-📦 README.md listo para GitHub
+
 # Spring Boot RabbitMQ Dockerized
 
 Proyecto completo dockerizado con:
@@ -644,7 +648,7 @@ Body:
 http://localhost:15672
 admin / admin
 
-🏗 Arquitectura resultante
+ Arquitectura resultante
 ┌─────────────────────┐
 │   Cliente REST      │
 └─────────┬───────────┘
@@ -661,7 +665,7 @@ admin / admin
 │ Exchange + Queue    │
 └─────────────────────┘
 
-🎯 Qué tiene esta versión
+Qué tiene esta versión
 
 ✔ Multi-stage build (imagen ligera)
 ✔ RabbitMQ persistente
